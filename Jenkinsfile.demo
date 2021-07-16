@@ -6,19 +6,18 @@ import com.cleverbuilder.SampleClass
 pipeline {
     agent any
     stages {
-        stage('Demo') {
+        stage('Trying to get all commit ID') {
             steps {
                 echo 'Hello, world'
                 sayHello 'Dave'
 
-                echo 'The value of foo is : ' + GlobalVars.foo
+                echo "Into Umbrella360 Build"
+                checkout([$class: 'GitSCM', branches: [[name: 'feature/docker-build']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'umbrella360']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Bitbucket_Sevice_Account', url: 'https://bitbucket.org/tarionwarranty/umbrella360.git']]])
+                 treeMapData = git(branch: 'feature/docker-build', credentialsId: 'Bitbucket_Sevice_Account', url: 'https://bitbucket.org/tarionwarranty/umbrella360.git')
+                 u360_commit = treeMapData["GIT_COMMIT"]
+                 echo "commitId -> $u360_commit"
 
-                script {
-                    def person = new SampleClass()
-                    person.age = 21
-                    person.increaseAge(10)
-                    echo 'Incremented age, is now : ' + person.age
-                }
+               
             }
         }
     }
